@@ -70,3 +70,30 @@ function addTask(params) {
 /** testing command
  * node task-cli.js add "Tasks here..."
  */
+
+function listTasks(params) {
+    const filter = params[0];
+    let tasks = readTasks();
+
+    if (filter) {
+        if (!["todo", "in-progress", "done"].includes(filter)) {
+            console.log("Invalid status filter");
+            return;
+        }
+        tasks = tasks.filter(task => task.status === filter);
+    }
+
+    if (tasks.length === 0) {
+        console.log("No tasks found");
+        return;
+    }
+
+    tasks.forEach(task => {
+        console.log(
+            `[${task.id}] ${task.description} - ${task.status}`
+        );
+    });
+}
+/** testing command
+ * node task-cli.js list todo
+ */
