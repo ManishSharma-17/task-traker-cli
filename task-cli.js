@@ -40,6 +40,10 @@ switch (command) {
         listTasks(args.slice(1));
         break;
 
+    case "delete":
+        deleteTask(args.slice(1));
+        break;
+
     default:
         console.log("Unknown command");
 }
@@ -96,4 +100,30 @@ function listTasks(params) {
 }
 /** testing command
  * node task-cli.js list todo
+ */
+
+function deleteTask(params) {
+    console.log(params)
+    const id = parseInt(params[0]);
+    console.log(id);
+
+    if (!id) {
+        console.log("Provide a valid task ID");
+        return;
+    }
+
+    const tasks = readTasks();
+    const filtered = tasks.filter(t => t.id !== id);
+
+    if (tasks.length === filtered.length) {
+        console.log("Task not found");
+        return;
+    }
+
+    writeTasks(filtered);
+    console.log("Task deleted successfully");
+}
+
+/** testing command
+ * node task-cli.js delete 1
  */
