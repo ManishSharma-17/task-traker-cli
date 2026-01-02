@@ -29,6 +29,7 @@ function writeTasks(tasks) {
 }
 
 const args = process.argv.slice(2);
+// console.log(args);
 const command = args[0];
 
 switch (command) {
@@ -42,6 +43,10 @@ switch (command) {
 
     case "delete":
         deleteTask(args.slice(1));
+        break;
+
+    case "update":
+        update(args.slice(1));
         break;
 
     default:
@@ -103,9 +108,7 @@ function listTasks(params) {
  */
 
 function deleteTask(params) {
-    console.log(params)
     const id = parseInt(params[0]);
-    console.log(id);
 
     if (!id) {
         console.log("Provide a valid task ID");
@@ -126,4 +129,59 @@ function deleteTask(params) {
 
 /** testing command
  * node task-cli.js delete 1
+ */
+
+function printHelp() {
+    console.log(`
+Usage: task-cli <command> [options]
+
+Commands:
+  add <description>       Add a new task
+  list [status]           List all tasks or filter by status (todo, in-progress, done)
+  delete <id>             Delete a task by ID
+`);
+}
+
+if (!command) {
+    printHelp();
+}
+
+if (command === "--help" || command === "-h") {
+    printHelp();
+}
+/** testing command
+ * node task-cli
+ * node task-cli -h
+ * node task-cli --help
+ * node task-cli add "New Task"
+ * node task-cli list
+ * node task-cli list todo
+ * node task-cli delete 1
+ */
+
+function update(params) {
+    const id = parseInt(params[0]);
+    const status = params[1];
+
+    if (!id || !status || !["todo", "in-progress", "done"].includes(status)) {
+        console.log("Provide a valid task ID and status (todo, in-progress, done)");
+        return;
+    }
+
+    const tasks = readTasks();
+    const task = tasks.find(t => t.id === id);
+
+    if (!task) {
+        console.log("Task not found");
+        return;
+    }
+
+    task.status = status;
+    task.updatedAt = new Date().toISOString();
+    writeTasks(tasks);
+
+    console.log("Task updated successfully");
+}
+/** testing command
+ * node task-cli update 2 done
  */
